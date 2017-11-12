@@ -1,9 +1,10 @@
-var canvas = document.getElementById("canvas");
-var context = canvas.getContext("2d");
-var width = canvas.width;
-var height = canvas.height;
-
-document.getElementById("snap").addEventListener("click",function() {draw()});
+var photo = document.getElementById("photo");
+var context = photo.getContext("2d");
+var width = photo.width;
+var height = photo.height;
+var video = document.getElementById('video');
+var board = document.getElementById("board");
+var bctx = board.getContext("2d");
 
 var isStreamSupported = function() {
     if (navigator.mediaDevices && navigator.getUserMedia) {
@@ -13,7 +14,6 @@ var isStreamSupported = function() {
 }
 
 
-var video = document.getElementById('video');
 var getCamera = function() {
     if (isStreamSupported()) {
 	navigator.getUserMedia({video:true},handleVideo,videoError);
@@ -27,15 +27,6 @@ var handleVideo = function(stream) {
 function videoError(e) {
     alert("bad");
 }
-
-getCamera();
-
-
-
-var board = document.getElementById("board");
-var bctx = board.getContext("2d");
-board.style.border = "5px solid black";
-
 
 var draw = function() {
     var bImgData = snapPhoto();
@@ -52,58 +43,15 @@ var snapPhoto = function() {
     var bData = bImgData.data;
     
     for (var i = 0; i < data.length; i+=4) {
-	if (colorFound(data[i],data[i+1],data[i+2])) {
-	    console.log("yes");
-	    console.log(data[i],data[i+1],data[i+2]);
-	    console.log(i,i+1,i+2);
-
-	    /*
-	    bctx.fillStyle = 'rgba(' + data[i] + ','
-		+ data[i+1] + ','
-		+ data[i+2] + ','
-		+ data[i+3] + ')';
-
-	    bctx.fillRect(i%width,Math.floor(i/width),1,1);
-	    */
-
-		
+	if (colorFound(data[i],data[i+1],data[i+2])) {		
 	    bData[i] = data[i];
 	    bData[i+1] = data[i+1];
 	    bData[i+2] = data[i+2];
-	    console.log(data[i+3]);
 	    bData[i+3] = data[i+3];
-	    
-	    
 	}
-
-	//36 69 106
-	//2283532
-	
     }
-
-	/*
-    console.log(bImgData); //the values are in here
-    bctx.putImageData(bImgData,0,0);
-
-    console.log(bImgData); //values are in here
-    console.log(bctx.getImageData(0,0,width,height)); //values dont move to here
-    console.log(bImgData); //the values are in here
-    */
-
-    //31 69 184
-    //2284120
-    
-
-    //bctx.putImageData(imageData, 0, 0);
-    //setImageData(bctx,bImgData);
-    
-    //console.log("no");
-    //console.log(data);
-    //return null;
-    //canvas.style.display = "none";
-
+    photo.style.display = "none";
     return bImgData;
-    
 }
 
 
@@ -118,59 +66,22 @@ var percentError = function(real,expected) {
 
 
 var colorFound = function(r,g,b) {
-    //return g > 120 && (g > 1.7 * r) && (g > 1.7 * b)
-    //return r > 120 && (r > 1.7 * b) && (r > 1.7 * g)
-    return b > 100 && (b > 1.5 * r) && (b > 1.5 * g)
-    
-    
+    return b > 100 && (b > 1.5 * r) && (b > 1.5 * g)    
 }
 
 
-var grayscale = function() {
-    var imageData = context.getImageData(0,0,width,height);
-    var data = imageData.data;
-    for (var i = 0; i < data.length; i += 4) {
-      var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-      data[i]     = avg; // red
-      data[i + 1] = avg; // green
-      data[i + 2] = avg; // blue
-    }
-    context.putImageData(imageData, 0, 0);
-  };
+getCamera();
 
+video.style.cssText = "-moz-transform: scale(-1, 1); \
+-webkit-transform: scale(-1, 1); -o-transform: scale(-1, 1); \
+transform: scale(-1, 1); filter: FlipH;";
 
+board.style.cssText = "-moz-transform: scale(-1, 1); \
+-webkit-transform: scale(-1, 1); -o-transform: scale(-1, 1); \
+transform: scale(-1, 1); filter: FlipH;";
 
-var invert = function() {
-    var imageData = bctx.getImageData(0,0,width,height);
-    var data = imageData.data;
-    for (var i = 0; i < data.length; i += 4) {
-      var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-      data[i]     = avg; // red
-      data[i + 1] = avg; // green
-      data[i + 2] = avg; // blue
-    }
-    console.log("called");
-    bctx.putImageData(imageData, 0, 0);
-  };
+video.style.display = "none";
+photo.style.display = "none";
+board.style.border = "2px solid black";
 
-
-var setImageData = function(ctx,imageData) {
-    ctx.putImageData(imageData, 0, 0);
-  };
-
-
-/*
-var bImgData = bctx.getImageData(0,0,width,height)
-var bData = bImgData.data;
-
-for() {
-    bData[i] = data[i];
-    bData[i+1] = data[i+1];
-    bData[i+2] = data[i+2];
-    console.log(bData[i]);
-    
-    
-}
-
-bctx.putImageData(bImgData,0,0);
-*/
+setInterval(function() {draw();},0);
