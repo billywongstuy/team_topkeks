@@ -40,7 +40,7 @@ var snapPhoto = function() {
 	    console.log("yes");
 	    //console.log(i);
 	    //console.log(i/4);
-	    console.log(i,i+1,i+2);
+	    console.log(data[i],data[i+1],data[i+2]);
 	    
 	    //console.log([Math.floor(i/3), Math.floor(i/3/width),Math.floor(i/3%width)]);
 	    return [Math.floor(i/3/width),Math.floor(i/3%width)];
@@ -52,6 +52,7 @@ var snapPhoto = function() {
 	
     }
     console.log("no");
+    console.log(data);
     return null;
     //canvas.style.display = "none";
 }
@@ -63,14 +64,10 @@ var percentError = function(real,expected) {
 
 
 var colorFound = function(r,g,b) {
-    g > 120 && (g > 1.7 * r) && (g > 1.7 * b)
-    //use ratios
-    var r_ratio = r/155;
-    var g_ratio = g/64;
-    var b_ratio = b/84;
-    var avg = (r_ratio+g_ratio+b_ratio)/3;
-    //console.log(r_ratio + " " + g_ratio + " " + b_ratio + " " + avg);
-    return percentError(r_ratio,avg) < 10 && percentError(g_ratio,avg) < 10 && percentError(b_ratio,avg) < 10;
-
+    //return g > 120 && (g > 1.7 * r) && (g > 1.7 * b)
+    //return r > 120 && (r > 1.7 * b) && (r > 1.7 * g)
+    return b > 100 && (b > 1.5 * r) && (b > 1.5 * g)
+    
+    
 }
 
