@@ -1,3 +1,7 @@
+/*----------------------
+ Initialized Variables
+----------------------*/
+
 var photo = document.getElementById("photo");
 var context = photo.getContext("2d");
 var width = photo.width;
@@ -8,6 +12,12 @@ var bctx = board.getContext("2d");
 var drawOn = document.getElementById("drawon");
 var eraserOn = document.getElementById("eraseron");
 var clearButton = document.getElementById("clear");
+var downloadButton = document.getElementById("download");
+
+
+/*------------------
+ Created Functions
+------------------*/
 
 var isStreamSupported = function() {
     if (navigator.mediaDevices && navigator.getUserMedia) {
@@ -101,6 +111,9 @@ var colorFound = function(r,g,b) {
     return b > 100 && (b > 1.5 * r) && (b > 1.5 * g)    
 }
 
+/*-------------------------
+ Functions to run on load
+-------------------------*/
 
 getCamera();
 
@@ -121,3 +134,27 @@ clearButton.addEventListener("click", function() {
 });
 
 setInterval(function() {draw();},0);
+
+
+/*-------------------------------
+ Not implemented
+-------------------------------*/
+
+/*
+var downloadImage = function(filename) {
+    var img = board.toDataURL("image/png");
+    document.write('<img src="' + img + '"/>');
+}
+
+downloadButton.addEventListener("click",function() {
+    var filename = document.getElementById("filename").value;
+    console.log(filename);
+    if (filename.length > 0) {
+	downloadImage(filename+".png");
+    }
+    else {
+	alert("Filename must be 1 or greater in length!");
+    }
+});*/
+
+
