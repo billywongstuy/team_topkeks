@@ -63,6 +63,7 @@ var percentError = function(real,expected) {
 
 
 var colorFound = function(r,g,b) {
+    g > 120 && (g > 1.7 * r) && (g > 1.7 * b)
     //use ratios
     var r_ratio = r/155;
     var g_ratio = g/64;
