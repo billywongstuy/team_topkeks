@@ -2,26 +2,44 @@
 <html>
   <head>
     <title>Title</title>
-    <!--<link rel="stylesheet" type="text/css" href="index.css">-->
+    <link rel="stylesheet" type="text/css" href="static/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="static/css/index.css">
+    <script type="text/javascript" src="static/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="static/js/bootstrap.js"></script>
   </head>
 
   <body>
 
-    <video id="video" width="840" height="680" autoplay></video>
-    <!--<button id="snap" type="button">Snap</button>-->
-    <canvas id="photo" width="840" height="680"></canvas>
-    <canvas id="board" width="840" height="680"></canvas>
-    <br><h3>Color: </h3><input type="color" id="color" value="#0000ff">
-    <br>
-    <input type="checkbox" id="drawon">Drawing On
-    <input type="checkbox" id="eraseron">Eraser On
-    <br>
-    <button type="button" id="clear">Clear Screen</button>
-    
-    <!--<br>
-    <input type="text" id="filename">.png
-    <button type="button" id="download">Download Image</button>-->
-    
+    <div class="container">
+
+      <h1>Draw Using a Blue Colored Object</h1>
+      
+      <video id="video" width="840" height="680" autoplay></video>
+      <!--<button id="snap" type="button">Snap</button>-->
+      <canvas id="photo" width="840" height="680"></canvas>
+      <canvas id="board" width="840" height="680"></canvas>
+
+      <div class="form-group">
+	<label for="color">Color:</label>
+	<input type="color" id="color" value="#0000ff">
+      </div>
+      <div class="checkbox">
+	<label>
+	  <input type="checkbox" id="drawon">Drawing On
+	</label>
+      </div>
+      <div class="checkbox">
+	<label>
+	  <input type="checkbox" id="eraseron">Eraser On
+	</label>
+      </div>
+      <button type="button" class="btn btn-primary" id="clear">Clear Screen</button>
+
+      <!--<br>
+	  <input type="text" id="filename">.png
+	  <button type="button" id="download">Download Image</button>-->
+      
+    </div>
     
     <script src="static/js/index.js"></script>  
     
