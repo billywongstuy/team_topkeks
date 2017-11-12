@@ -3,7 +3,7 @@ var context = canvas.getContext("2d");
 var width = canvas.width;
 var height = canvas.height;
 
-document.getElementById("snap").addEventListener("click",function() {snapPhoto()});
+document.getElementById("snap").addEventListener("click",function() {draw()});
 
 var isStreamSupported = function() {
     if (navigator.mediaDevices && navigator.getUserMedia) {
@@ -31,30 +31,84 @@ function videoError(e) {
 getCamera();
 
 
+
+var board = document.getElementById("board");
+var bctx = board.getContext("2d");
+board.style.border = "5px solid black";
+
+
+var draw = function() {
+    var bImgData = snapPhoto();
+    setBoard(bImgData);
+}
+
+
 var snapPhoto = function() {
     context.drawImage(video,0,0,width,height); //x,y,width,length
-    var data = context.getImageData(0,0,width,height).data;
-    console.log(data.length);
-    for (var i = 0; i < canvas.width*canvas.height-3; i+=4) {
+    var imgData = context.getImageData(0,0,width,height);
+    var data = imgData.data;
+    
+    var bImgData = bctx.getImageData(0,0,width,height);
+    var bData = bImgData.data;
+    
+    for (var i = 0; i < data.length; i+=4) {
 	if (colorFound(data[i],data[i+1],data[i+2])) {
 	    console.log("yes");
-	    //console.log(i);
-	    //console.log(i/4);
 	    console.log(data[i],data[i+1],data[i+2]);
+	    console.log(i,i+1,i+2);
+
+	    /*
+	    bctx.fillStyle = 'rgba(' + data[i] + ','
+		+ data[i+1] + ','
+		+ data[i+2] + ','
+		+ data[i+3] + ')';
+
+	    bctx.fillRect(i%width,Math.floor(i/width),1,1);
+	    */
+
+		
+	    bData[i] = data[i];
+	    bData[i+1] = data[i+1];
+	    bData[i+2] = data[i+2];
+	    console.log(data[i+3]);
+	    bData[i+3] = data[i+3];
 	    
-	    //console.log([Math.floor(i/3), Math.floor(i/3/width),Math.floor(i/3%width)]);
-	    return [Math.floor(i/3/width),Math.floor(i/3%width)];
-	    // i/3 is pixel number
-	    // there are width pixels in a row
-	    // to get col position i/3 % width
-	    // to get row position i/3 / width
+	    
 	}
+
+	//36 69 106
+	//2283532
 	
     }
-    console.log("no");
-    console.log(data);
-    return null;
+
+	/*
+    console.log(bImgData); //the values are in here
+    bctx.putImageData(bImgData,0,0);
+
+    console.log(bImgData); //values are in here
+    console.log(bctx.getImageData(0,0,width,height)); //values dont move to here
+    console.log(bImgData); //the values are in here
+    */
+
+    //31 69 184
+    //2284120
+    
+
+    //bctx.putImageData(imageData, 0, 0);
+    //setImageData(bctx,bImgData);
+    
+    //console.log("no");
+    //console.log(data);
+    //return null;
     //canvas.style.display = "none";
+
+    return bImgData;
+    
+}
+
+
+var setBoard = function(imgData) {
+    bctx.putImageData(imgData,0,0);
 }
 
 
@@ -71,3 +125,52 @@ var colorFound = function(r,g,b) {
     
 }
 
+
+var grayscale = function() {
+    var imageData = context.getImageData(0,0,width,height);
+    var data = imageData.data;
+    for (var i = 0; i < data.length; i += 4) {
+      var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+      data[i]     = avg; // red
+      data[i + 1] = avg; // green
+      data[i + 2] = avg; // blue
+    }
+    context.putImageData(imageData, 0, 0);
+  };
+
+
+
+var invert = function() {
+    var imageData = bctx.getImageData(0,0,width,height);
+    var data = imageData.data;
+    for (var i = 0; i < data.length; i += 4) {
+      var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+      data[i]     = avg; // red
+      data[i + 1] = avg; // green
+      data[i + 2] = avg; // blue
+    }
+    console.log("called");
+    bctx.putImageData(imageData, 0, 0);
+  };
+
+
+var setImageData = function(ctx,imageData) {
+    ctx.putImageData(imageData, 0, 0);
+  };
+
+
+/*
+var bImgData = bctx.getImageData(0,0,width,height)
+var bData = bImgData.data;
+
+for() {
+    bData[i] = data[i];
+    bData[i+1] = data[i+1];
+    bData[i+2] = data[i+2];
+    console.log(bData[i]);
+    
+    
+}
+
+bctx.putImageData(bImgData,0,0);
+*/
