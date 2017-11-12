@@ -5,6 +5,9 @@ var height = photo.height;
 var video = document.getElementById('video');
 var board = document.getElementById("board");
 var bctx = board.getContext("2d");
+var drawOn = document.getElementById("drawon");
+var eraserOn = document.getElementById("eraseron");
+var clearButton = document.getElementById("clear");
 
 var isStreamSupported = function() {
     if (navigator.mediaDevices && navigator.getUserMedia) {
@@ -34,6 +37,15 @@ var draw = function() {
 }
 
 
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+}
+
 var snapPhoto = function() {
     context.drawImage(video,0,0,width,height); //x,y,width,length
     var imgData = context.getImageData(0,0,width,height);
@@ -41,13 +53,33 @@ var snapPhoto = function() {
     
     var bImgData = bctx.getImageData(0,0,width,height);
     var bData = bImgData.data;
-    
-    for (var i = 0; i < data.length; i+=4) {
-	if (colorFound(data[i],data[i+1],data[i+2])) {		
+
+    for (var i = 0; i < data.length && (drawOn.checked || eraserOn.checked); i+=4) {
+	if (colorFound(data[i],data[i+1],data[i+2])) {
+	    
+	    // set it to the color in the camera
+	    /*
 	    bData[i] = data[i];
 	    bData[i+1] = data[i+1];
 	    bData[i+2] = data[i+2];
 	    bData[i+3] = data[i+3];
+	    */
+
+
+	    //console.log(drawOn.value);
+	    var color;
+	    if (!eraserOn.checked) {
+		color = hexToRgb(document.getElementById("color").value);
+	    }
+	    else {
+		color = {"r":255,"g":255,"b":255};
+	    }
+	    
+	    bData[i] = color["r"];
+	    bData[i+1] = color["g"];
+	    bData[i+2] = color["b"];
+	    bData[i+3] = 255;
+	    
 	}
     }
     photo.style.display = "none";
@@ -83,5 +115,9 @@ transform: scale(-1, 1); filter: FlipH;";
 video.style.display = "none";
 photo.style.display = "none";
 board.style.border = "2px solid black";
+
+clearButton.addEventListener("click", function() {
+    bctx.clearRect(0,0,width,height);
+});
 
 setInterval(function() {draw();},0);
