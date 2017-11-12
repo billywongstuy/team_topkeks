@@ -3,8 +3,12 @@ import os
 import sys
 import werkzeug.contrib.fixers
 
+from lib.utils import utils
+from lib.views import public
+
 ####  ALL OF THIS STUFF SHOULD REMAIN FREE FLOATING ####
 app = flask.Flask(__name__)
+app.register_blueprint(public.public_views)
 
 app.wsgi_app = werkzeug.contrib.fixers.ProxyFix(app.wsgi_app)
 try:
