@@ -28,10 +28,12 @@ var isStreamSupported = function() {
 
 
 var getCamera = function() {
-    if (isStreamSupported()) {
-        navigator.getUserMedia({video:true},handleVideo,videoError);
-    }
-}
+    navigator.mediaDevices.getUserMedia({video:true}).then(function(stream){
+        handleVideo(stream);
+    }).catch(function(error){
+        console.log("error!");
+    });
+};
 
 var handleVideo = function(stream) {
     video.src = window.URL.createObjectURL(stream);
@@ -63,19 +65,17 @@ var snapPhoto = function() {
 
     var bImgData = bctx.getImageData(0,0,width,height);
     var bData = bImgData.data;
+    var currentColor = hexToRgb(document.getElementById("color").value);
+    var color;
+    if (!eraserOn.checked) {
+        color = currentColor;
+    }
+    else {
+        color = {"r":255,"g":255,"b":255};
+    }
 
     for (var i = 0; i < data.length && (drawOn.checked || eraserOn.checked); i+=4) {
         if (colorFound(data[i],data[i+1],data[i+2])) {
-
-                        //console.log(drawOn.value);
-            var color;
-            if (!eraserOn.checked) {
-                color = hexToRgb(document.getElementById("color").value);
-            }
-            else {
-                color = {"r":255,"g":255,"b":255};
-            }
-
             bData[i] = color["r"];
             bData[i+1] = color["g"];
             bData[i+2] = color["b"];
